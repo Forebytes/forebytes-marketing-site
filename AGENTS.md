@@ -93,9 +93,29 @@ body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
 
 ### Waitlist
 
-`WaitlistForm` posts to `/api/waitlist`. The route currently appends to `data/waitlist.jsonl`, which
-works locally and **fails on Vercel** (read-only filesystem). Production needs Supabase; see
-`docs/deployment.md`.
+`WaitlistForm` posts to `/api/waitlist`: honeypot, in-memory rate limit, server-side validation
+(`lib/waitlist.ts`), then `lib/waitlist-store.ts`. Production writes to the Supabase `waitlist` table
+through PostgREST with the service role key; local dev falls back to `data/waitlist.jsonl`. In
+production with no Supabase configured it fails loudly (500) instead of losing signups. The table
+SQL is `supabase/waitlist.sql`. See `docs/deployment.md`.
+
+### Domains and universal links (do not contradict the app)
+
+`forebytes.com` and `www.forebytes.com` serve this site directly with **no redirect**. The demo's
+`<slug>.forebytes.com` subdomains (QR codes on printed menus) belong to the demo project and must
+never be moved. `forebytes-app` opens shared `/dish/<id>` and `/restaurant/<id>` links from
+`www.forebytes.com`, so:
+
+- **Never redirect `www`, or anything under `/.well-known/`.** Apple rejects redirects for the
+  association file.
+- `/.well-known/apple-app-site-association` is built by `lib/aasa.ts` from `APPLE_TEAM_ID` and must
+  list the same paths the app shares (`UNIVERSAL_LINK_PATHS`).
+- The app must set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com`, not the apex, or shared links
+  open Safari instead of the app.
+- `/privacy`, `/terms` and `/community-guidelines` are linked from inside the app. Keep the paths.
+- `/dish/[id]` and `/restaurant/[id]` are noindex landing pages for people without the app.
+
+Full detail, and what to check before changing any of it: `docs/universal-links.md`.
 
 ---
 
@@ -134,8 +154,9 @@ Work on a branch and open a PR into `main`.
 
 Open items, none of which will look broken:
 
-1. **Waitlist storage.** Wire Supabase (table, RLS, service-role grant, rate limit) and add the
-   env vars in Vercel. Until then the form errors on the live site.
+1. **Waitlist storage.** The code is done. Run `supabase/waitlist.sql` in the shared Supabase project,
+   add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel, redeploy, and submit a test signup.
+   Until then the form errors on the live site.
 2. **Privacy Policy entity.** `[FOREBYTES ENTITY NAME]` and `[REGISTERED ADDRESS]` are still
    placeholders in `app/privacy/page.tsx`. Forebytes is not incorporated yet.
 3. **Solicitor review** of Privacy and Terms.
@@ -143,7 +164,9 @@ Open items, none of which will look broken:
    and metadata still say launching. Ask which is true.
 5. **Design placeholders still visible:** "YOUR DISH", "DISH MODEL GOES HERE", "Dish name /
    Nutrition / € —" menu rows, and the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
-6. **Domain.** Set `NEXT_PUBLIC_SITE_URL` in Vercel. Canonicals, sitemap and Open Graph all use it.
+6. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
+   Add `APPLE_TEAM_ID` for universal links, and set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com` in
+   the app (see "Domains and universal links").
 7. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
 8. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.

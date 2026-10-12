@@ -16,24 +16,26 @@ The site deploys to Vercel from `main`. Every push to a branch gets a preview UR
 
 4. Add the production domain (Project → Settings → Domains) and set `NEXT_PUBLIC_SITE_URL` to match.
 
-## Waitlist storage (required before launch)
+## Waitlist storage (required: the live form returns a 500 until this is done)
 
-`app/api/waitlist/route.ts` currently writes to `data/waitlist.jsonl`. Vercel's filesystem is
-read-only, so on the live site every signup would return an error.
+The code is written (`lib/waitlist-store.ts`, `app/api/waitlist/route.ts`). In production it writes
+to a Supabase `waitlist` table, and fails loudly if Supabase is not configured rather than losing
+signups. Vercel's filesystem is read-only, so the local-file fallback only works in development.
 
-Move `store()` to Supabase, following the rules in `forebytes-app`'s `AGENTS.md`:
-
-- A `waitlist` table with a unique, lower-cased `email`, `created_at`, and RLS enabled.
-- **No grant to `anon` or `authenticated`.** Only the server writes to it.
-- The route handler uses the **service role key**, which needs an explicit grant on the table
-  (`service_role` bypasses RLS but not grants).
-- Rate-limit the route, and treat a duplicate email as success so the form does not reveal who is
-  already on the list.
-- The service role key goes in Vercel as a server-only variable. Never prefix it with `NEXT_PUBLIC_`.
-- Both founders share one Supabase project: coordinate before running SQL against it.
-
-Put the table's SQL in `supabase/` in this repo, or in the app's `schema.sql`, whichever the team
-prefers, so it is re-runnable.
+1. **Create the table.** Run `supabase/waitlist.sql` in the Supabase SQL Editor. It is re-runnable.
+   Both founders share one Supabase project: coordinate before running SQL against it. It follows the
+   app's rules: RLS on, no grant to `anon` or `authenticated`, an explicit grant to `service_role`
+   (which bypasses RLS but not grants), and the email rules mirrored as a CHECK constraint.
+2. **Add two env vars in Vercel** (Production, and Preview if you want previews to work):
+   - `SUPABASE_URL`: the project URL.
+   - `SUPABASE_SERVICE_ROLE_KEY`: the service role key. **Server-only. Never prefix it with
+     `NEXT_PUBLIC_`, never commit it.** `npm run check:secrets` fails the build if you do.
+3. **Redeploy** (env vars only apply to new deployments).
+4. **Test:** submit a real email on the live site, confirm the row appears in Supabase, and submit
+   it again to confirm a duplicate still shows success.
+5. **Rate limiting:** the route has a best-effort in-memory limiter, which is per serverless
+   instance and not a guarantee. Add a Vercel Firewall rule (Project → Firewall → Rate limiting) on
+   `POST /api/waitlist`, for example 10 requests per minute per IP.
 
 ## After launch
 

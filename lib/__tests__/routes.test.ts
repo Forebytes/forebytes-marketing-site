@@ -4,11 +4,14 @@ import { describe, expect, it } from "vitest";
 import sitemap from "@/app/sitemap";
 import { SITE } from "@/lib/site";
 
-/** Every app/**\/page.tsx is a public route, except api and not-found. */
+/**
+ * Every static app/**\/page.tsx is a public, indexable route. Dynamic share-landing pages
+ * (/dish/[id], /restaurant/[id]) are noindex on purpose and are not in the sitemap.
+ */
 function pageRoutes(dir = "app", base = ""): string[] {
   return readdirSync(dir).flatMap((name) => {
     const full = path.join(dir, name);
-    if (statSync(full).isDirectory()) return pageRoutes(full, `${base}/${name}`);
+    if (statSync(full).isDirectory()) return name.startsWith("[") ? [] : pageRoutes(full, `${base}/${name}`);
     return name === "page.tsx" ? [base || "/"] : [];
   });
 }

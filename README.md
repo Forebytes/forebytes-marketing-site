@@ -36,6 +36,8 @@ If port 3000 is busy: `npx next dev -p 4173`.
 | Variable | Where | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `.env.local`, Vercel | Production domain. Used for canonical URLs, the sitemap, Open Graph and structured data. Defaults to `https://forebytes.com`. |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Vercel (server-only) | Waitlist storage. Not needed locally: dev writes `data/waitlist.jsonl`. |
+| `APPLE_TEAM_ID` | Vercel (server-only) | Serves `/.well-known/apple-app-site-association` for universal links. 404s without it, on purpose. |
 
 `NEXT_PUBLIC_` values are inlined into the browser bundle, so only ever put public values behind
 that prefix. `.env*` files are gitignored; `.env.example` is the template.
@@ -65,7 +67,7 @@ components/home/        scroll-driven home sections (Hero, Marquee, Manifesto, S
 components/             Nav, Footer, Reveal, LegalPage, WaitlistForm, SmoothScroll, JsonLd
 lib/                    site config, SEO helper, waitlist validation, GSAP helpers (+ __tests__)
 scripts/                check-secrets, check-audit
-docs/                   deployment
+docs/                   deployment, universal links and domains
 ```
 
 ### Design system
@@ -82,9 +84,16 @@ and share card. New pages must be added to `app/sitemap.ts`; a test enforces it.
 
 ### Waitlist
 
-`POST /api/waitlist` validates the email (`lib/waitlist.ts`), has a honeypot, and currently appends
-to `data/waitlist.jsonl`. That works locally but **not on Vercel**, so production needs Supabase.
-See `docs/deployment.md`.
+`POST /api/waitlist` validates the email (`lib/waitlist.ts`), has a honeypot and a rate limit, and
+stores it in Supabase in production (`supabase/waitlist.sql`) or `data/waitlist.jsonl` in dev. See
+`docs/deployment.md`.
+
+### Domains and universal links
+
+`forebytes.com` and `www` serve this site with no redirect; the demo's `<slug>.forebytes.com`
+subdomains stay on the demo project. The iOS app opens shared `/dish/<id>` and `/restaurant/<id>` links
+from `www.forebytes.com`, which needs the association file this site serves. Read
+`docs/universal-links.md` before touching a domain, redirect or share path.
 
 ## 5. Security rules
 
@@ -104,10 +113,12 @@ checklist.
 
 Before this goes live:
 
-- [ ] Waitlist storage wired to Supabase
+- [ ] Waitlist table created and Supabase env vars set in Vercel (code is done)
+- [ ] `APPLE_TEAM_ID` set in Vercel; app's `EXPO_PUBLIC_WEB_URL` set to `https://www.forebytes.com`
 - [ ] Privacy Policy entity name and registered address filled in
 - [ ] Solicitor review of Privacy and Terms
 - [ ] "Launched" vs "launching" in Dublin made consistent
 - [ ] Design placeholders replaced (dish artwork, AR model, menu rows, stickers)
+- [x] `forebytes.com` live on Vercel (apex and www, no redirect)
 - [ ] `NEXT_PUBLIC_SITE_URL` set in Vercel
 - [ ] Added to Google Search Console, sitemap submitted

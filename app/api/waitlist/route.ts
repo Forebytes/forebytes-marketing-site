@@ -1,22 +1,16 @@
 import { NextResponse } from "next/server";
-import { appendFile, mkdir } from "node:fs/promises";
-import path from "node:path";
+import { createLimiter } from "@/lib/rate-limit";
 import { parseWaitlistBody } from "@/lib/waitlist";
+import { storeWaitlistEmail } from "@/lib/waitlist-store";
 
 export const runtime = "nodejs";
 
-/**
- * Waitlist signup. Persists to ./data/waitlist.jsonl locally.
- * For production, replace `store()` with Supabase: serverless hosts have a read-only filesystem,
- * so this only works for local development. See docs/deployment.md.
- */
-async function store(entry: { email: string; at: string }) {
-  const dir = path.join(process.cwd(), "data");
-  await mkdir(dir, { recursive: true });
-  await appendFile(path.join(dir, "waitlist.jsonl"), JSON.stringify(entry) + "\n");
-}
+const allow = createLimiter({ max: 5, windowMs: 10 * 60 * 1000 });
 
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  if (!allow(ip)) return NextResponse.json({ error: "Too many attempts. Please try again in a few minutes." }, { status: 429 });
+
   let body: { email?: unknown; company?: unknown };
   try {
     body = await req.json();
@@ -30,8 +24,9 @@ export async function POST(req: Request) {
   if (result.kind === "invalid") return NextResponse.json({ error: result.message }, { status: 422 });
 
   try {
-    await store({ email: result.email, at: new Date().toISOString() });
-  } catch {
+    await storeWaitlistEmail(result.email);
+  } catch (error) {
+    console.error("waitlist: could not store signup", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
   return NextResponse.json({ ok: true });

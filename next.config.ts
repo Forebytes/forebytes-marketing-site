@@ -3,6 +3,10 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Apple fetches this exact path for universal links; it is served by app/aasa/route.ts.
+  async rewrites() {
+    return [{ source: "/.well-known/apple-app-site-association", destination: "/aasa" }];
+  },
   async headers() {
     return [
       {
