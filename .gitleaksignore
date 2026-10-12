@@ -1,0 +1,3 @@
+# False positives from gitleaks, verified by hand and not real credentials. Each entry is the
+# fingerprint gitleaks itself prints for the finding: <commit>:<file>:<rule>:<line>.
+# Empty for now.

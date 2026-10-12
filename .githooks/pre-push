@@ -1,0 +1,20 @@
+#!/bin/sh
+# Runs before every `git push`.
+#
+# Deliberately not the full `npm run verify`: lint, tests and a build take a minute or more, and a
+# hook that slow gets bypassed, which is worse than no hook. This runs the checks that are fast AND
+# guard something irreversible. A leaked key is the one mistake you cannot take back: deleting the
+# commit does not help, it is on GitHub, in forks and in anyone's clone. Everything else is caught
+# by CI and is fixable in a follow-up commit.
+#
+# To skip in an emergency: git push --no-verify
+
+set -e
+
+echo "pre-push: checking for exposed secrets..."
+node scripts/check-secrets.mjs
+
+echo "pre-push: typechecking..."
+npm run --silent typecheck
+
+echo "pre-push: ok (lint, tests, build and audit run in CI)"

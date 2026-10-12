@@ -1,0 +1,149 @@
+# Forebytes marketing site, agent guide
+
+The public website for Forebytes (restaurant discovery + AR menus, launching in Dublin). Next.js 16
+App Router, React 19, TypeScript, Tailwind v4, GSAP ScrollTrigger and Lenis. Deployed on Vercel.
+The app itself lives in `forebytes-official/forebytes-app`; this repo is only the marketing site.
+
+Read `README.md` for setup. This file is about how to work in the codebase.
+
+> **If this conversation is about launching, going live, the domain, or Vercel, read "Before going
+> live" below and raise the open blockers with the user before doing anything else.** Several are
+> knowingly deferred and will not look broken.
+
+---
+
+## Non-negotiables
+
+### Security
+
+1. **Never put a secret behind `NEXT_PUBLIC_`.** That prefix inlines the value into the browser
+   bundle. `NEXT_PUBLIC_SITE_URL` is the only one today.
+2. **The Supabase service role key never appears in the repo or in client code.** It bypasses RLS.
+   It lives in Vercel's environment variables and is read only in route handlers.
+3. **Client components read only `NEXT_PUBLIC_` variables.** `npm run check:secrets` fails the build
+   otherwise.
+4. **Validate on the server.** `lib/waitlist.ts` is the control for the signup form; the form's
+   `required` attribute is a convenience. Keep the honeypot field (`company`) and keep answering
+   bots with a fake success so they learn nothing.
+5. **When the waitlist moves to Supabase, follow the app's database rules** (`AGENTS.md` in
+   `forebytes-app`): RLS on the table, `anon` gets nothing, writes go through the route handler with
+   the service role, which needs its own grant because `service_role` bypasses RLS but not grants.
+   The two founders share one Supabase project, so coordinate before running SQL.
+
+`npm run check:secrets` and `npm run check:audit` run in CI. They are not style advice: a PR that
+breaks one fails.
+
+### Legal and claims
+
+- **Privacy, Terms, Community Guidelines and FAQs are written by the founders from what the app
+  actually does.** Do not rewrite, "improve" or soften them. Change them only when the user supplies
+  new copy.
+- **Do not invent facts.** No fabricated ratings, user counts, press, testimonials or launch
+  claims. The design still carries a few placeholders (see below), which are the user's call.
+- Privacy and Terms still need a solicitor's review, especially "Limitation of liability".
+
+---
+
+## Architecture
+
+### Routes
+
+`/` home, `/about`, `/faq`, `/community-guidelines`, `/privacy`, `/terms`, plus `POST /api/waitlist`,
+`sitemap.xml`, `robots.txt`, `manifest.webmanifest` and a generated Open Graph image.
+
+Long-form legal pages share `components/LegalPage.tsx`. Section bodies are JSX; use the
+`.legal-prose` styles in `globals.css` (paragraphs, lists, `<h3>` for sub-items) rather than ad-hoc
+markup. `components/legal.tsx` has the labelled-item helper.
+
+### SEO is part of the definition of done
+
+- **Every page exports `metadata` through `pageMeta()`** in `lib/seo.ts`. Do not set a bare `title`:
+  a page without its own Open Graph card inherits the home page's, so shared links preview wrongly.
+- **A new page goes in `app/sitemap.ts`.** `lib/__tests__/routes.test.ts` fails if a page is missing
+  from the sitemap or the sitemap lists a page that does not exist.
+- **One `<h1>` per page.**
+- Structured data goes through `components/JsonLd.tsx`, which escapes `<`. Site-wide
+  Organization/WebSite is in `app/layout.tsx`, MobileApplication on the home page, FAQPage on `/faq`.
+  If a FAQ answer changes, change its `text` for the schema too.
+- Canonical URLs come from `SITE.url` (`NEXT_PUBLIC_SITE_URL`). It defaults to `https://forebytes.com`.
+
+### Design system ("Organic")
+
+Cream and sand ground, terracotta accent, sage second accent. Caprasimo for headings, Figtree for
+body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
+
+- Tokens live in `app/globals.css` under `@theme static`. Component classes (`.btn`, `.tag`,
+  `.input`) live in `app/organic.css` inside `@layer components` so Tailwind utilities can override
+  them. Use `var(--color-*)` or the Tailwind colour utilities, not new hex values.
+- Over-round everything: pill buttons, `--radius-lg` containers. Left-aligned, asymmetric layouts.
+- **Section eyebrow pills ("The problem", "Scroll", "First stop") were removed on purpose.** Do not
+  add them back. Everything else in the original design was kept deliberately, including the
+  decorative circles, stickers, marquee and the tilting motion. Do not "clean it up".
+- Use `h-dvh` / `min-h-dvh`, not `h-screen`, for full-height sections (mobile Safari).
+
+### Motion
+
+- Scroll scenes are client components using GSAP `ScrollTrigger` through `useGSAP`; Lenis drives
+  smooth scrolling from GSAP's ticker (`components/SmoothScroll.tsx`) so the two stay in sync.
+- Pinned scenes use a tall section with a `sticky` child and compute progress from the section, then
+  apply it with `gsap.set`. Clean up through `useGSAP`'s scope, never raw listeners.
+- `components/Reveal.tsx` is the scroll-in for everything else. It hides content until it enters the
+  viewport, and shows it immediately for `prefers-reduced-motion`.
+- Respect `prefers-reduced-motion`: no interval-driven or velocity-driven motion when it is set.
+
+### Waitlist
+
+`WaitlistForm` posts to `/api/waitlist`. The route currently appends to `data/waitlist.jsonl`, which
+works locally and **fails on Vercel** (read-only filesystem). Production needs Supabase; see
+`docs/deployment.md`.
+
+---
+
+## Conventions
+
+- **TypeScript strict.** No `any`. `npm run typecheck` must pass.
+- **Path alias:** `@/` is the repo root.
+- **Server components by default.** Add `"use client"` only for scroll scenes, forms and anything
+  using hooks or the DOM.
+- **Comments explain why, not what.** Prefer none over one that restates the code.
+- **Tests:** vitest, under `**/__tests__/*.test.ts`. Pure logic goes in `lib/` so it can be tested
+  (see `lib/waitlist.ts`). A bug fix gets a test that fails without it.
+- **Dependencies:** TypeScript is pinned to 6.x because `typescript-eslint` does not support 7 yet.
+  Check before bumping.
+- **Port:** the dev server uses Next's default, 3000. Another project may already be on it; pass
+  `-p` rather than editing `package.json`.
+
+---
+
+## Verifying your work
+
+```sh
+npm run verify   # typecheck, lint, tests, secret scan, dependency audit
+npm run build    # what Vercel runs; catches bad metadata and prerender errors
+```
+
+CI runs the same checks plus a build and gitleaks, so a green `verify` plus a green `build` locally
+means a green PR. A `pre-push` hook (installed by `npm install` via the `prepare` script) runs the
+fast half, the secret scan and typecheck. `git push --no-verify` skips it if you must.
+
+Work on a branch and open a PR into `main`.
+
+---
+
+## Before going live
+
+Open items, none of which will look broken:
+
+1. **Waitlist storage.** Wire Supabase (table, RLS, service-role grant, rate limit) and add the
+   env vars in Vercel. Until then the form errors on the live site.
+2. **Privacy Policy entity.** `[FOREBYTES ENTITY NAME]` and `[REGISTERED ADDRESS]` are still
+   placeholders in `app/privacy/page.tsx`. Forebytes is not incorporated yet.
+3. **Solicitor review** of Privacy and Terms.
+4. **"Launched" vs "launching" in Dublin.** The founders' copy says launched; the home page, footer
+   and metadata still say launching. Ask which is true.
+5. **Design placeholders still visible:** "YOUR DISH", "DISH MODEL GOES HERE", "Dish name /
+   Nutrition / € —" menu rows, and the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
+6. **Domain.** Set `NEXT_PUBLIC_SITE_URL` in Vercel. Canonicals, sitemap and Open Graph all use it.
+7. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
+8. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
+   `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
