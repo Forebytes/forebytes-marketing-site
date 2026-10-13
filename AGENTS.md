@@ -97,7 +97,9 @@ body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
 (`lib/waitlist.ts`), then `lib/waitlist-store.ts`. Production writes to the Supabase `waitlist` table
 through PostgREST with the service role key; local dev falls back to `data/waitlist.jsonl`. In
 production with no Supabase configured it fails loudly (500) instead of losing signups. The table
-SQL is `supabase/waitlist.sql`. See `docs/deployment.md`.
+SQL is `supabase/waitlist.sql`. A genuinely new signup (not a duplicate) also emails the team through
+Brevo (`lib/waitlist-notify.ts`, optional via `BREVO_API_KEY`), sent with `after()` so the visitor
+never waits and a failed alert never fails the signup. See `docs/deployment.md`.
 
 ### Domains and universal links (do not contradict the app)
 
@@ -154,9 +156,8 @@ Work on a branch and open a PR into `main`.
 
 Open items, none of which will look broken:
 
-1. **Waitlist storage.** The code is done. Run `supabase/waitlist.sql` in the shared Supabase project,
-   add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Vercel, redeploy, and submit a test signup.
-   Until then the form errors on the live site.
+1. **Waitlist.** Live and working on Supabase. Optional: add `BREVO_API_KEY` in Vercel to get an email
+   to support@forebytes.com for each new signup. Delete any test rows from the `waitlist` table.
 2. **Privacy Policy entity.** `[FOREBYTES ENTITY NAME]` and `[REGISTERED ADDRESS]` are still
    placeholders in `app/privacy/page.tsx`. Forebytes is not incorporated yet.
 3. **Solicitor review** of Privacy and Terms.
@@ -175,3 +176,13 @@ Open items, none of which will look broken:
 8. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
 9. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

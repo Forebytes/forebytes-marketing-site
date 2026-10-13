@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { createLimiter } from "@/lib/rate-limit";
+import { notifyNewSignup } from "@/lib/waitlist-notify";
 import { parseWaitlistBody } from "@/lib/waitlist";
 import { storeWaitlistEmail } from "@/lib/waitlist-store";
 
@@ -23,11 +24,24 @@ export async function POST(req: Request) {
   if (result.kind === "bot") return NextResponse.json({ ok: true });
   if (result.kind === "invalid") return NextResponse.json({ error: result.message }, { status: 422 });
 
+  let isNew: boolean;
   try {
-    await storeWaitlistEmail(result.email);
+    isNew = await storeWaitlistEmail(result.email);
   } catch (error) {
     console.error("waitlist: could not store signup", error instanceof Error ? error.message : error);
     return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
+  }
+
+  // Alert the team about genuinely new signups only. It runs after the response is sent, so the
+  // visitor never waits on it, and a failed alert is logged but never fails the signup.
+  if (isNew) {
+    after(async () => {
+      try {
+        await notifyNewSignup(result.email);
+      } catch (error) {
+        console.error("waitlist: could not send the signup alert", error instanceof Error ? error.message : error);
+      }
+    });
   }
   return NextResponse.json({ ok: true });
 }

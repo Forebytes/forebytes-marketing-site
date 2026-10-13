@@ -37,6 +37,7 @@ If port 3000 is busy: `npx next dev -p 4173`.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `.env.local`, Vercel | Production domain. Used for canonical URLs, the sitemap, Open Graph and structured data. Defaults to `https://forebytes.com`. |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Vercel (server-only) | Waitlist storage. Not needed locally: dev writes `data/waitlist.jsonl`. |
+| `BREVO_API_KEY`, `WAITLIST_NOTIFY_TO`, `WAITLIST_NOTIFY_FROM` | Vercel (server-only), optional | Emails the team on each new waitlist signup. `WAITLIST_NOTIFY_TO` defaults to `support@forebytes.com`. |
 | `APPLE_TEAM_ID` | Vercel (server-only) | Serves `/.well-known/apple-app-site-association` for universal links. 404s without it, on purpose. |
 
 `NEXT_PUBLIC_` values are inlined into the browser bundle, so only ever put public values behind

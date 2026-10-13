@@ -12,19 +12,25 @@ afterEach(() => {
 });
 
 describe("storeWaitlistEmail", () => {
-  it("inserts through PostgREST and ignores duplicates", async () => {
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201 });
+  it("inserts through PostgREST, ignores duplicates, and reports a new signup", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => [{ id: "1" }] });
     vi.stubGlobal("fetch", fetchMock);
-    await storeWaitlistEmail("a@b.com");
+    expect(await storeWaitlistEmail("a@b.com")).toBe(true);
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe("https://x.supabase.co/rest/v1/waitlist?on_conflict=email");
     expect(init.headers.Prefer).toContain("ignore-duplicates");
+    expect(init.headers.Prefer).toContain("return=representation");
     expect(JSON.parse(init.body)).toEqual({ email: "a@b.com" });
+  });
+
+  it("reports a duplicate (no row returned) as not new", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => [] }));
+    expect(await storeWaitlistEmail("a@b.com")).toBe(false);
   });
 
   it("sends a new-style sb_secret key in apikey only, not as a Bearer token", async () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = "sb_secret_abc123";
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201 });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => [{ id: "1" }] });
     vi.stubGlobal("fetch", fetchMock);
     await storeWaitlistEmail("a@b.com");
     const { headers } = fetchMock.mock.calls[0][1];
@@ -34,7 +40,7 @@ describe("storeWaitlistEmail", () => {
 
   it("sends a legacy JWT service_role key as both apikey and Bearer", async () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOi.payload.sig";
-    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201 });
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => [{ id: "1" }] });
     vi.stubGlobal("fetch", fetchMock);
     await storeWaitlistEmail("a@b.com");
     expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe("Bearer eyJhbGciOi.payload.sig");
