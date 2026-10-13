@@ -164,9 +164,14 @@ Open items, none of which will look broken:
    and metadata still say launching. Ask which is true.
 5. **Design placeholders still visible:** "YOUR DISH", "DISH MODEL GOES HERE", "Dish name /
    Nutrition / € —" menu rows, and the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
-6. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
+6. **BLOCKED on an Apple Developer account.** There is no Apple Team ID yet, so
+   `/.well-known/apple-app-site-association` returns 404 and shared links open the website, not the
+   app. Nothing on the site is broken by this. When the team exists: set `APPLE_TEAM_ID` in Vercel,
+   redeploy, check the file returns 200 JSON on `www.forebytes.com`, then do the app-side steps in
+   `docs/universal-links.md`. Tracked in the repo's issues.
+7. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
    Add `APPLE_TEAM_ID` for universal links, and set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com` in
    the app (see "Domains and universal links").
-7. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
-8. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
+8. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
+9. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.

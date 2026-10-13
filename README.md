@@ -114,7 +114,7 @@ checklist.
 Before this goes live:
 
 - [ ] Waitlist table created and Supabase env vars set in Vercel (code is done)
-- [ ] `APPLE_TEAM_ID` set in Vercel; app's `EXPO_PUBLIC_WEB_URL` set to `https://www.forebytes.com`
+- [ ] **Blocked: no Apple Developer account / Team ID yet.** Then: `APPLE_TEAM_ID` in Vercel, and the app's `EXPO_PUBLIC_WEB_URL` set to `https://www.forebytes.com` (universal links)
 - [ ] Privacy Policy entity name and registered address filled in
 - [ ] Solicitor review of Privacy and Terms
 - [ ] "Launched" vs "launching" in Dublin made consistent

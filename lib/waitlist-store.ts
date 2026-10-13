@@ -13,11 +13,14 @@ export async function storeWaitlistEmail(email: string): Promise<void> {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (url && key) {
+    // Supabase has two key formats. The legacy `service_role` key is a JWT and is sent as both the
+    // apikey and a Bearer token. The newer `sb_secret_...` key is not a JWT and goes in `apikey` only.
+    const isJwt = key.startsWith("eyJ");
     const res = await fetch(`${url.replace(/\/$/, "")}/rest/v1/waitlist?on_conflict=email`, {
       method: "POST",
       headers: {
         apikey: key,
-        Authorization: `Bearer ${key}`,
+        ...(isJwt ? { Authorization: `Bearer ${key}` } : {}),
         "Content-Type": "application/json",
         Prefer: "resolution=ignore-duplicates,return=minimal",
       },

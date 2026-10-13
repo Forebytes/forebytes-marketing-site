@@ -27,8 +27,9 @@ signups. Vercel's filesystem is read-only, so the local-file fallback only works
    app's rules: RLS on, no grant to `anon` or `authenticated`, an explicit grant to `service_role`
    (which bypasses RLS but not grants), and the email rules mirrored as a CHECK constraint.
 2. **Add two env vars in Vercel** (Production, and Preview if you want previews to work):
-   - `SUPABASE_URL`: the project URL.
-   - `SUPABASE_SERVICE_ROLE_KEY`: the service role key. **Server-only. Never prefix it with
+   - `SUPABASE_URL`: the project URL (Supabase dashboard → Project Settings → API).
+   - `SUPABASE_SERVICE_ROLE_KEY`: the secret key from the same page (the `service_role` key, or an
+     `sb_secret_...` key under API Keys; both work). **Server-only. Never prefix it with
      `NEXT_PUBLIC_`, never commit it.** `npm run check:secrets` fails the build if you do.
 3. **Redeploy** (env vars only apply to new deployments).
 4. **Test:** submit a real email on the live site, confirm the row appears in Supabase, and submit
