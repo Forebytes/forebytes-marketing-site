@@ -34,7 +34,13 @@ signups. Vercel's filesystem is read-only, so the local-file fallback only works
 3. **Redeploy** (env vars only apply to new deployments).
 4. **Test:** submit a real email on the live site, confirm the row appears in Supabase, and submit
    it again to confirm a duplicate still shows success.
-5. **Rate limiting:** the route has a best-effort in-memory limiter, which is per serverless
+5. **Signup alerts (optional but recommended).** Add `BREVO_API_KEY` in Vercel (Brevo → SMTP & API →
+   API Keys → Generate). Each genuinely new signup then emails `support@forebytes.com`. Repeat
+   signups of the same address stay silent, and a failed email never fails the signup (it is logged
+   in Vercel's function logs). Optional overrides: `WAITLIST_NOTIFY_TO` (comma-separated recipients)
+   and `WAITLIST_NOTIFY_FROM` (a sender on the verified `forebytes.com` domain, default
+   `noreply@forebytes.com`). Redeploy after adding them.
+6. **Rate limiting:** the route has a best-effort in-memory limiter, which is per serverless
    instance and not a guarantee. Add a Vercel Firewall rule (Project → Firewall → Rate limiting) on
    `POST /api/waitlist`, for example 10 requests per minute per IP.
 
