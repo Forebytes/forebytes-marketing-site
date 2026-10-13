@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same branch makes the in-flight run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      # Catches broken imports, bad metadata and anything that fails to prerender, which typecheck
+      # alone does not. No real value belongs in CI: the build only needs the site URL to exist.
+      - name: Build
+        env:
+          NEXT_PUBLIC_SITE_URL: https://example.com
+        run: npm run build
+
+  security:
+    name: Security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # gitleaks needs history to scan the commits a PR introduces.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Our own rules: nothing secret behind NEXT_PUBLIC_, no service role key, no committed JWT or
+      # private key, no server-only env read from a client component.
+      - name: Check for exposed secrets
+        run: node scripts/check-secrets.mjs
+
+      # Broad secret detection, for anything our own rules do not know about. The binary rather
+      # than gitleaks-action: the action needs a paid licence for organisation accounts, the CLI is
+      # MIT. `git` mode scans what is actually committed, history included.
+      - name: gitleaks
+        env:
+          GITLEAKS_VERSION: 8.30.1
+        run: |
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          ./gitleaks git . --no-banner --redact --exit-code 1
+
+      # High and critical only, with a short, dated exception list.
+      - name: Audit dependencies
+        run: node scripts/check-audit.mjs

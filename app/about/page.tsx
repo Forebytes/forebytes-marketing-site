@@ -3,6 +3,7 @@ import { pageMeta } from "@/lib/seo";
 import Nav from "@/components/Nav";
 import { FooterCompact } from "@/components/Footer";
 import Reveal from "@/components/Reveal";
+import IrelandMap from "@/components/IrelandMap";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = pageMeta({ title: "About", description: "Forebytes is a restaurant discovery app built around one idea: you should be able to see what a dish actually looks like before you order it.", path: "/about" });
@@ -66,11 +67,9 @@ export default function About() {
               Forebytes launched first in Dublin.
             </Reveal>
           </div>
-          <div className="relative" style={{ height: "clamp(260px,40vw,480px)" }} aria-hidden>
-            <Reveal variant="pop" className="bg-accent-2 absolute top-0 right-0 aspect-square rounded-full" style={{ width: "min(70%,380px)" }} />
-            <Reveal variant="pop" delay={200} className="bg-accent absolute bottom-0 aspect-square rounded-full" style={{ left: "6%", width: "min(46%,250px)" }} />
-            <Reveal variant="pop" delay={350} className="bg-accent-200 absolute aspect-square rounded-full" style={{ right: "30%", bottom: "8%", width: "min(22%,120px)" }} />
-          </div>
+          <Reveal variant="up" className="mx-auto w-[min(72%,360px)] md:ml-auto md:mr-[8%]">
+            <IrelandMap />
+          </Reveal>
         </section>
 
         <section className="px-page" style={{ paddingBlock: "clamp(80px,14vh,160px) clamp(40px,8vh,90px)" }}>
