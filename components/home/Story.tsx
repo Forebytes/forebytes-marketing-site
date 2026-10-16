@@ -2,6 +2,9 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
+import AppScreen from "@/components/app-ui/AppScreen";
+import { useScreenData } from "@/components/app-ui/ShowcaseProvider";
+import { DiscoverScreen, DishScreen, FeedScreen, RateScreen, RestaurantScreen } from "@/components/app-ui/screens";
 import SceneAnchor from "@/components/SceneAnchor";
 import { registerGsap, clamp } from "@/lib/gsap";
 
@@ -13,81 +16,18 @@ const STEPS = [
   { n: "05", title: "See what friends eat.", body: "Follow people you trust and let their plates decide yours." },
 ];
 
-const Star = ({ filled = true }: { filled?: boolean }) => (
-  <svg width="38" height="38" viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.75" strokeLinejoin="round" aria-hidden>
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-  </svg>
-);
-
-function MenuRow({ tone }: { tone: "a" | "b" }) {
-  const a = tone === "a";
-  return (
-    <div className="flex items-center gap-3 rounded-[22px] p-3" style={{ background: a ? "var(--color-accent-100)" : "var(--color-accent-2-100)" }}>
-      <div className="h-[62px] w-[62px] flex-none rounded-full" style={{ background: a ? "var(--color-accent-300)" : "var(--color-accent-2-300)" }} />
-      <div className="min-w-0 flex-1">
-        <div className="font-heading text-[17px]">Dish name</div>
-        <div className="text-neutral-600 text-xs">Nutrition · kcal</div>
-      </div>
-      <div className="font-bold">€ —</div>
-    </div>
-  );
-}
-
-function FeedCard({ tone, label }: { tone: "a" | "b"; label: string }) {
-  const a = tone === "a";
-  return (
-    <div className="rounded-3xl p-3.5" style={{ background: a ? "var(--color-accent-2-100)" : "var(--color-accent-100)" }}>
-      <div className="mb-2.5 flex items-center gap-2.5">
-        <div className="h-[34px] w-[34px] rounded-full" style={{ background: a ? "var(--color-accent-2)" : "var(--color-accent)" }} />
-        <div className="text-[13px] font-semibold">{label}</div>
-      </div>
-      <div className="h-24 rounded-[18px]" style={{ background: a ? "var(--color-accent-2-300)" : "var(--color-accent-300)" }} />
-    </div>
-  );
-}
-
 function PhoneScreens() {
+  const { s, skeleton } = useScreenData();
+  const screens = [DiscoverScreen, RestaurantScreen, DishScreen, RateScreen, FeedScreen];
   return (
     <>
-      {/* 0 map */}
-      <div data-screen className="bg-accent-100 absolute inset-0">
-        <div className="bg-bg absolute h-[26px]" style={{ left: "-20%", top: "30%", width: "140%", transform: "rotate(-14deg)" }} />
-        <div className="bg-bg absolute h-[18px]" style={{ left: "-20%", top: "62%", width: "140%", transform: "rotate(9deg)" }} />
-        <div className="bg-bg absolute w-[22px]" style={{ left: "38%", top: "-10%", height: "120%", transform: "rotate(12deg)" }} />
-        <div className="bg-accent absolute h-[38px] w-[38px] rounded-full" style={{ left: "18%", top: "24%" }} />
-        <div className="bg-accent-2 absolute h-[38px] w-[38px] rounded-full" style={{ left: "62%", top: "40%" }} />
-        <div className="bg-accent absolute h-[38px] w-[38px] rounded-full" style={{ left: "32%", top: "58%" }}><span className="bg-accent anim-ping absolute inset-0 rounded-full" /></div>
-        <div className="bg-accent-2 absolute h-[38px] w-[38px] rounded-full" style={{ left: "72%", top: "68%" }} />
-        <div className="bg-bg text-neutral-600 absolute inset-x-4 top-[52px] rounded-full px-5 py-3.5 text-sm shadow-md">Search restaurants, dishes…</div>
-        <div className="bg-bg absolute inset-x-4 bottom-5 rounded-[28px] p-[18px] shadow-lg">
-          <div className="font-heading text-xl">Near Dublin city centre</div>
-          <div className="text-neutral-600 mt-1 text-[13px]">Sorted by distance</div>
+      {screens.map((Screen, i) => (
+        <div key={i} data-screen className="absolute inset-0">
+          <AppScreen skeleton={skeleton}>
+            <Screen s={s} />
+          </AppScreen>
         </div>
-      </div>
-      {/* 1 menu */}
-      <div data-screen className="bg-bg absolute inset-0 px-[18px] pt-14">
-        <div className="font-heading mb-4 text-[28px]">Menu</div>
-        <div className="flex flex-col gap-3"><MenuRow tone="a" /><MenuRow tone="b" /><MenuRow tone="a" /><MenuRow tone="b" /></div>
-      </div>
-      {/* 2 AR */}
-      <div data-screen className="bg-accent-2-300 absolute inset-0">
-        <div className="bg-bg absolute rounded-full shadow-lg" style={{ left: "50%", top: "46%", width: "76%", aspectRatio: "1", transform: "translate(-50%,-50%)" }} />
-        <div className="bg-accent-300 absolute rounded-full" style={{ left: "50%", top: "46%", width: "48%", aspectRatio: "1", transform: "translate(-50%,-50%)" }} />
-        <div className="border-accent-2-700 absolute rounded-full border-[3px] border-dashed" style={{ left: "50%", top: "46%", width: "76%", aspectRatio: "1", transform: "translate(-50%,-50%)", animation: "spin 16s linear infinite" }} />
-        <div className="absolute inset-x-0 bottom-[30px] flex justify-center"><span className="btn btn-primary">View in AR</span></div>
-      </div>
-      {/* 3 rate */}
-      <div data-screen className="bg-bg absolute inset-0 px-[22px] pt-[70px] text-center">
-        <div className="bg-accent-300 mx-auto mb-[26px] h-[150px] w-[150px] rounded-full" />
-        <div className="font-heading text-[26px]">How was it?</div>
-        <div className="text-accent my-5 flex justify-center gap-2"><Star /><Star /><Star /><Star /><Star filled={false} /></div>
-        <span className="btn btn-primary btn-block">Submit rating</span>
-      </div>
-      {/* 4 feed */}
-      <div data-screen className="bg-bg absolute inset-0 px-[18px] pt-14">
-        <div className="font-heading mb-4 text-[28px]">Friends</div>
-        <div className="flex flex-col gap-3.5"><FeedCard tone="a" label="A friend rated a dish" /><FeedCard tone="b" label="Another visited a place" /></div>
-      </div>
+      ))}
     </>
   );
 }

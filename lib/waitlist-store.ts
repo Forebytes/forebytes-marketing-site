@@ -1,5 +1,6 @@
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { authHeaders, supabaseEnv } from "@/lib/supabase-rest";
 
 /**
  * Save a waitlist email. A duplicate counts as success, so the form never reveals who is on the list.
@@ -10,18 +11,13 @@ import path from "node:path";
  * with no setup. In production with no Supabase configured it throws rather than silently losing signups.
  */
 export async function storeWaitlistEmail(email: string): Promise<boolean> {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const env = supabaseEnv();
 
-  if (url && key) {
-    // Supabase has two key formats. The legacy `service_role` key is a JWT and is sent as both the
-    // apikey and a Bearer token. The newer `sb_secret_...` key is not a JWT and goes in `apikey` only.
-    const isJwt = key.startsWith("eyJ");
-    const res = await fetch(`${url.replace(/\/$/, "")}/rest/v1/waitlist?on_conflict=email`, {
+  if (env) {
+    const res = await fetch(`${env.url}/rest/v1/waitlist?on_conflict=email`, {
       method: "POST",
       headers: {
-        apikey: key,
-        ...(isJwt ? { Authorization: `Bearer ${key}` } : {}),
+        ...authHeaders(env.key),
         "Content-Type": "application/json",
         // return=representation: an inserted row comes back, an ignored duplicate comes back as [].
         Prefer: "resolution=ignore-duplicates,return=representation",

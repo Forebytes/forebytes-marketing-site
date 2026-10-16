@@ -139,3 +139,13 @@ p { text-wrap: pretty; }
 .faq-item summary:hover::after { background: var(--color-accent-200); }
 .faq-item[open] summary:hover::after { background: var(--color-accent-600); }
 .faq-item .legal-prose { padding: 0 64px 24px 0; font-size: 18px; line-height: 1.65; }
+
+/* Phone mockups: while the real data loads, dynamic text becomes a quiet block of the same size. */
+[data-skeleton] [data-t] {
+  color: transparent !important;
+  background: #ebe2d3;
+  border-radius: 5px;
+  animation: skelPulse 1.6s ease-in-out infinite;
+}
+[data-skeleton] [data-t] * { color: transparent !important; }
+@keyframes skelPulse { 50% { opacity: .55; } }

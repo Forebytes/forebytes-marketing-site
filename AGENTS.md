@@ -111,6 +111,15 @@ body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
   viewport, and shows it immediately for `prefers-reduced-motion`.
 - Respect `prefers-reduced-motion`: no interval-driven or velocity-driven motion when it is set.
 
+### Live phones
+
+The phones on the home page are the iOS app's screens rebuilt in code (`components/app-ui/`) and filled with
+real, visitor-specific data from `/api/showcase`. They mirror the **app's** design (cream and brown, Playfair
+and Inter), not the website's. Never put real users' names or reviews in them, keep the DEMO badge on seeded
+restaurants, and keep `components/app-ui/theme.ts` in step with the app's theme. What is exposed, how a restaurant
+is chosen, the loading and empty states, and how to test: `docs/live-phones.md`. The data comes from the
+`site_showcase()` function in `supabase/showcase.sql`, which must be run once in Supabase.
+
 ### Waitlist
 
 `WaitlistForm` posts to `/api/waitlist`: honeypot, in-memory rate limit, server-side validation
@@ -193,8 +202,12 @@ Open items, none of which will look broken:
 7. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
    Add `APPLE_TEAM_ID` for universal links, and set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com` in
    the app (see "Domains and universal links").
-8. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
-9. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
+8. **Run `supabase/showcase.sql`** in the shared Supabase project (after Ayomide has seen the exposure note in
+   `forebytes-app`'s `docs/security.md`). Until then the phones show placeholder labels instead of real data.
+9. **Privacy Policy:** the site now uses a visitor's approximate location (city, from their IP address, not stored)
+   to pick what the phones show. The founders' policy does not mention it yet; see the repo's issues.
+10. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
+11. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
 
 <!-- BEGIN:nextjs-agent-rules -->

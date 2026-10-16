@@ -1,3 +1,4 @@
+import { ShowcaseProvider } from "@/components/app-ui/ShowcaseProvider";
 import JsonLd from "@/components/JsonLd";
 import { SITE } from "@/lib/site";
 import Nav from "@/components/Nav";
@@ -16,6 +17,7 @@ export default function Home() {
     <>
       <JsonLd data={{ "@context": "https://schema.org", "@type": "MobileApplication", name: SITE.name, description: SITE.description, operatingSystem: "iOS", applicationCategory: "LifestyleApplication", offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" }, url: SITE.url }} />
       <Nav />
+      <ShowcaseProvider>
       <main id="main">
         <Hero />
         <div className="overflow-x-clip">
@@ -28,6 +30,7 @@ export default function Home() {
         <Dublin />
         <Cta />
       </main>
+      </ShowcaseProvider>
       <FooterFull />
     </>
   );

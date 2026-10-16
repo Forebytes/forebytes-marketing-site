@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { caprasimo, figtree } from "@/lib/fonts";
+import { caprasimo, figtree, inter, playfair } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import SmoothScroll from "@/components/SmoothScroll";
 import JsonLd from "@/components/JsonLd";
@@ -29,7 +29,7 @@ export const viewport: Viewport = { themeColor: "#f5ead8", width: "device-width"
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${caprasimo.variable} ${figtree.variable}`}>
+    <html lang="en" className={`${caprasimo.variable} ${figtree.variable} ${playfair.variable} ${inter.variable}`}>
       <body className="bg-bg text-text font-body antialiased">
         <SmoothScroll />
         <JsonLd data={{
