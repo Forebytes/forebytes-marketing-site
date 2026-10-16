@@ -127,7 +127,7 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md lg:grid" style={{ left: -64, top: "14%" }}>
+          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md lg:grid" style={{ left: -100, top: "14%" }}>
             AR<br />ready
           </div>
           {rating !== null && (
