@@ -61,7 +61,9 @@
   --space-4: 17.6px;
   --space-6: 26.4px;
   --space-8: 35.2px;
-  --gutter: clamp(20px, 5vw, 72px);
+  /* Side padding grows on very wide screens so content stays inside a ~1680px column instead of
+     sprawling left with empty space on the right. */
+  --gutter: max(clamp(20px, 5vw, 72px), calc((100vw - 1680px) / 2));
 }
 
 html { scroll-behavior: auto; }
@@ -110,7 +112,7 @@ p { text-wrap: pretty; }
 /* Hover tint for plain nav-style links (no JS) */
 .pill-link { text-decoration: none; padding: 8px 14px; border-radius: 999px; color: var(--color-text); }
 .pill-link:hover { background: var(--color-accent-100); color: var(--color-text); }
-.foot-link { color: var(--color-accent-200); }
+.foot-link { color: var(--color-accent-200); display: inline-block; padding-block: 6px; }
 .foot-link:hover { color: #fff; }
 
 @media (prefers-reduced-motion: reduce) {

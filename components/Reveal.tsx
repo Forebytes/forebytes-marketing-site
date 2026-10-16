@@ -8,6 +8,8 @@ const FROM = {
   left: "translateX(-24vw) rotate(-5deg)",
   pop: "scale(.15) rotate(-40deg)",
   soft: "translateY(70px) rotate(1.5deg)",
+  // For tall blocks: any rotation swings their edges past the screen, so rise and fade only.
+  fade: "translateY(24px)",
 } as const;
 
 type Props = {
@@ -38,7 +40,7 @@ export default function Reveal({ as: Tag = "div", variant = "up", delay = 0, sty
       ([en]) => {
         if (!en.isIntersecting) return;
         io.disconnect();
-        const soft = variant === "soft";
+        const soft = variant === "soft" || variant === "fade";
         el.style.transition = soft
           ? "transform 1s cubic-bezier(.2,1.1,.3,1), opacity .7s ease"
           : `transform 1.2s cubic-bezier(.2,1.25,.3,1) ${delay}ms, opacity .8s ease ${delay}ms`;

@@ -68,7 +68,7 @@ export default function Hero() {
     <section
       ref={root}
       id="top"
-      className="px-page relative grid min-h-dvh grid-cols-1 items-center gap-8 overflow-hidden pt-[clamp(120px,16vh,170px)] pb-20 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,.75fr)]"
+      className="px-page relative grid min-h-dvh grid-cols-1 items-center gap-8 overflow-hidden pt-[clamp(120px,16vh,170px)] pb-20 md:grid-cols-[minmax(0,1.25fr)_minmax(0,.75fr)]"
     >
       <div data-px="0.25" className="anim-blob bg-accent-200 absolute z-0" style={{ right: "-8vw", top: "-10vh", width: "52vw", height: "52vw" }} />
       <div data-px="-0.18" className="bg-accent-2-200 absolute z-0 rounded-full" style={{ left: "-10vw", bottom: "-18vw", width: "34vw", height: "34vw" }} />
@@ -104,8 +104,8 @@ export default function Hero() {
         <div data-px="0.12" className="relative">
           <div className="anim-bob">
             <div
-              className="p-2.5"
-              style={{ width: "min(300px,64vw)", aspectRatio: "300/610", borderRadius: 46, background: "#201e1d", boxShadow: "var(--shadow-lg), 0 60px 80px -30px color-mix(in srgb, var(--color-accent) 55%, transparent)" }}
+              className="w-[min(300px,64vw)] p-2.5 md:w-[min(300px,28vw)]"
+              style={{ aspectRatio: "300/610", borderRadius: 46, background: "#201e1d", boxShadow: "var(--shadow-lg), 0 60px 80px -30px color-mix(in srgb, var(--color-accent) 55%, transparent)" }}
             >
               <div className="bg-accent-2-300 relative h-full w-full overflow-hidden" style={{ borderRadius: 36 }}>
                 <div className="bg-bg absolute rounded-full shadow-lg" style={{ left: "50%", top: "44%", width: "74%", aspectRatio: "1", transform: "translate(-50%,-50%)" }} />
@@ -117,10 +117,10 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md sm:grid" style={{ left: -64, top: "14%" }}>
+          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md lg:grid" style={{ left: -64, top: "14%" }}>
             AR<br />ready
           </div>
-          <div data-px="-0.3" className="bg-accent-2 font-heading absolute hidden h-20 w-20 place-items-center rounded-full text-[28px] text-white shadow-md sm:grid" style={{ right: -44, bottom: "14%" }}>4.8</div>
+          <div data-px="-0.3" className="bg-accent-2 font-heading absolute hidden h-20 w-20 place-items-center rounded-full text-[28px] text-white shadow-md lg:grid" style={{ right: -44, bottom: "14%" }}>4.8</div>
         </div>
       </div>
     </section>
