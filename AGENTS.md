@@ -96,6 +96,10 @@ body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
   `hidden md:inline-flex`.
 - **Clip full-bleed rotated bands** (the marquee) in an `overflow-x-clip` wrapper so phones cannot pan sideways.
 - Tap targets are at least 32px tall; check with a real device or the responsive audit before shipping.
+- **Links into the pinned scenes jump, they do not scroll.** Lenis runs with `anchors: { immediate: true }`,
+  and `#how`, `#ar` and `#join` are `SceneAnchor` markers inside their scenes, placed where the scene's content
+  is visible. A link to a scene's own top would land on a blank first frame. Add the same marker to any new
+  pinned scene that gets a nav link.
 
 ### Motion
 

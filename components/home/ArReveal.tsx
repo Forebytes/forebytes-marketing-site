@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
+import SceneAnchor from "@/components/SceneAnchor";
 import { registerGsap, clamp } from "@/lib/gsap";
 
 export default function ArReveal() {
@@ -29,14 +30,9 @@ export default function ArReveal() {
   );
 
   return (
-    <section ref={root} id="ar" className="relative" style={{ height: "420vh" }}>
+    <section ref={root} className="relative" style={{ height: "420vh" }}>
+      <SceneAnchor id="ar" at={0.88} />
       <div className="sticky top-0 grid h-dvh place-items-center overflow-hidden">
-        <div className="absolute inset-0 grid place-items-center px-6 text-center">
-          <div>
-            <div className="font-heading leading-none" style={{ fontSize: "clamp(28px,min(5vw,8dvh),80px)" }}>Ready for a closer look?</div>
-          </div>
-        </div>
-
         <div data-ar-layer className="bg-accent-2-800 absolute inset-0 grid place-items-center overflow-hidden" style={{ clipPath: "circle(0px at 50% 50%)" }}>
           <div data-ar-ring className="border-accent-2-500 absolute rounded-full border-[3px] border-dashed opacity-70" style={{ width: "90vmin", height: "90vmin" }} />
           <div data-ar-ring2 className="border-accent-2-600 absolute rounded-full border-[3px] border-dashed" style={{ width: "62vmin", height: "62vmin" }} />

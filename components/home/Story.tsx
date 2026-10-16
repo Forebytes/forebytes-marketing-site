@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
+import SceneAnchor from "@/components/SceneAnchor";
 import { registerGsap, clamp } from "@/lib/gsap";
 
 const STEPS = [
@@ -147,7 +148,8 @@ export default function Story() {
 
   const bigNum = { fontSize: "clamp(60px,min(22vw,26dvh),340px)", lineHeight: 0.8 };
   return (
-    <section ref={root} id="how" className="bg-accent-2-100 relative" style={{ height: "700vh" }}>
+    <section ref={root} className="bg-accent-2-100 relative" style={{ height: "700vh" }}>
+      <SceneAnchor id="how" at={0.1} />
       <div className="px-page sticky top-0 grid h-dvh pt-[72px] grid-cols-1 grid-rows-[auto_auto] content-center items-center gap-4 overflow-hidden md:grid-cols-2 md:grid-rows-1 md:gap-6">
           <div data-spin className="border-accent-2-200 absolute rounded-full" style={{ left: "-14vw", top: "-14vw", width: "46vw", height: "46vw", borderWidth: "3vw", borderStyle: "solid" }} />
         <div data-story-bg className="bg-accent-200 absolute rounded-full opacity-80" style={{ right: "-12vw", bottom: "-22vw", width: "60vw", height: "60vw" }} />

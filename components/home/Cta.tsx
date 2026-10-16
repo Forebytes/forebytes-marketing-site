@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { registerGsap, clamp } from "@/lib/gsap";
+import SceneAnchor from "@/components/SceneAnchor";
 import WaitlistForm from "@/components/WaitlistForm";
 
 export default function Cta() {
@@ -27,7 +28,8 @@ export default function Cta() {
   );
 
   return (
-    <section ref={root} id="join" className="relative" style={{ height: "260vh" }}>
+    <section ref={root} className="relative" style={{ height: "260vh" }}>
+      <SceneAnchor id="join" at={0.8} />
       <div className="sticky top-0 grid h-dvh place-items-center overflow-hidden pt-[72px]">
         <div data-cta-circle className="bg-accent absolute rounded-full" style={{ left: "50%", top: "50%", width: "200vmax", height: "200vmax", margin: "-100vmax 0 0 -100vmax" }} />
         <div data-cta-body className="text-bg relative max-w-[900px] px-6 text-center">
