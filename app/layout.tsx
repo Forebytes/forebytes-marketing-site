@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   title: { default: `${SITE.name}: ${SITE.tagline}`, template: `%s · ${SITE.name}` },
   description: SITE.description,
   applicationName: SITE.name,
-  keywords: ["restaurant discovery app", "Dublin restaurants", "AR menu", "dish ratings", "restaurant menus with prices", "nutrition", "Forebytes"],
+  keywords: [
+    "restaurant discovery app", "Dublin restaurants", "AR menu", "dish ratings", "dish-level ratings app",
+    "restaurant menus with prices", "nutrition", "AR food app", "see food before you order", "3D menu app",
+    "restaurant app Dublin", "Forebytes",
+  ],
   alternates: { canonical: "/" },
   openGraph: {
     title: `${SITE.name}: ${SITE.tagline}`,

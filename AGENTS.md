@@ -192,8 +192,8 @@ Open items, none of which will look broken:
 3. **Solicitor review** of Privacy and Terms.
 4. **"Launched" vs "launching" in Dublin.** The founders' copy says launched; the home page, footer
    and metadata still say launching. Ask which is true.
-5. **Design placeholders still visible:** "YOUR DISH", "DISH MODEL GOES HERE", "Dish name /
-   Nutrition / € —" menu rows, and the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
+5. **Design placeholders still visible:** "YOUR DISH", "Dish name / Nutrition / € —" menu rows, and
+   the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
 6. **BLOCKED on an Apple Developer account.** There is no Apple Team ID yet, so
    `/.well-known/apple-app-site-association` returns 404 and shared links open the website, not the
    app. Nothing on the site is broken by this. When the team exists: set `APPLE_TEAM_ID` in Vercel,
@@ -206,8 +206,12 @@ Open items, none of which will look broken:
    `forebytes-app`'s `docs/security.md`). Until then the phones show placeholder labels instead of real data.
 9. **Privacy Policy:** the site now uses a visitor's approximate location (city, from their IP address, not stored)
    to pick what the phones show. The founders' policy does not mention it yet; see the repo's issues.
-10. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
-11. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
+10. **Run `supabase/share-preview.sql`** in the shared Supabase project (re-run it if you already
+    did before `public_profile_card()` was added). Until then, shared dish, restaurant, and profile
+    links show the original generic landing page instead of the real name and photo, nothing
+    breaks, it just isn't rich yet. See `docs/universal-links.md`.
+11. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
+12. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
 
 <!-- BEGIN:nextjs-agent-rules -->

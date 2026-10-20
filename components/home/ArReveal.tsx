@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
+import { IoCubeOutline } from "react-icons/io5";
 import SceneAnchor from "@/components/SceneAnchor";
 import { registerGsap, clamp } from "@/lib/gsap";
 
@@ -36,9 +37,13 @@ export default function ArReveal() {
         <div data-ar-layer className="bg-accent-2-800 absolute inset-0 grid place-items-center overflow-hidden" style={{ clipPath: "circle(0px at 50% 50%)" }}>
           <div data-ar-ring className="border-accent-2-500 absolute rounded-full border-[3px] border-dashed opacity-70" style={{ width: "90vmin", height: "90vmin" }} />
           <div data-ar-ring2 className="border-accent-2-600 absolute rounded-full border-[3px] border-dashed" style={{ width: "62vmin", height: "62vmin" }} />
-          <div data-ar-plate className="bg-bg relative grid aspect-square place-items-center rounded-full" style={{ width: "min(44vmin,36dvh,420px)", boxShadow: "0 40px 90px rgba(0,0,0,.45)" }}>
-            <div className="bg-accent-300 text-accent-900 grid aspect-square place-items-center rounded-full text-center text-[13px] font-bold tracking-[.1em]" style={{ width: "68%" }}>
-              DISH MODEL<br />GOES HERE
+          {/* No sample dish: nothing is live in the AR buckets yet (generation is still in its
+             end-to-end test window per forebytes-app/docs/ar-pipeline.md). This mirrors the app's
+             own empty state on a dish with no model ("No 3D view yet. Be the first to scan it."),
+             not a stand-in photo. Swap for a real model once one is approved and live. */}
+          <div data-ar-plate className="border-accent-2-400 text-accent-2-400 relative grid aspect-square place-items-center rounded-full border-[3px] border-dashed" style={{ width: "min(44vmin,36dvh,420px)" }}>
+            <div style={{ width: "28%", height: "28%" }}>
+              <IoCubeOutline style={{ width: "100%", height: "100%" }} />
             </div>
           </div>
           <div data-ar-text className="text-bg absolute" style={{ left: "var(--gutter)", bottom: "clamp(30px,8vh,90px)", maxWidth: "min(640px,86vw)" }}>

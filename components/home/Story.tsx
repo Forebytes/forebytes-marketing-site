@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import AppScreen from "@/components/app-ui/AppScreen";
 import { useScreenData } from "@/components/app-ui/ShowcaseProvider";
-import { DiscoverScreen, DishScreen, FeedScreen, RateScreen, RestaurantScreen } from "@/components/app-ui/screens";
+import { DiscoverScreen, DishScreen, FeedScreen, ListsScreen, RateScreen, RestaurantScreen } from "@/components/app-ui/screens";
 import SceneAnchor from "@/components/SceneAnchor";
 import { registerGsap, clamp } from "@/lib/gsap";
 
@@ -14,11 +14,12 @@ const STEPS = [
   { n: "03", title: "Put it on your table.", body: "Open any dish in AR. Check the portion, the plating, the size. Then decide." },
   { n: "04", title: "Rate what you ate.", body: "Rate restaurants and individual dishes, and add your own photos." },
   { n: "05", title: "See what friends eat.", body: "Follow people you trust and let their plates decide yours." },
+  { n: "06", title: "Keep what you love.", body: "Saved for Later, Want to Try, Places Visited, plus lists of your own." },
 ];
 
 function PhoneScreens() {
   const { s, skeleton } = useScreenData();
-  const screens = [DiscoverScreen, RestaurantScreen, DishScreen, RateScreen, FeedScreen];
+  const screens = [DiscoverScreen, RestaurantScreen, DishScreen, RateScreen, FeedScreen, ListsScreen];
   return (
     <>
       {screens.map((Screen, i) => (
@@ -44,6 +45,7 @@ export default function Story() {
       const dots = gsap.utils.toArray<HTMLElement>("[data-dot]", el);
       const phone = el.querySelector<HTMLElement>("[data-phone]")!;
       const bg = el.querySelector<HTMLElement>("[data-story-bg]")!;
+      const journeyFill = el.querySelector<HTMLElement>("[data-journey-fill]")!;
       const n = steps.length;
       const PI = Math.PI;
 
@@ -72,12 +74,13 @@ export default function Story() {
         const active = Math.min(n - 1, Math.floor(idx));
         dots.forEach((d, i) => gsap.to(d, { scale: i === active ? 1.7 : 1, opacity: i === active ? 1 : 0.35, duration: 0.3, overwrite: true }));
         gsap.set(phone, {
-          rotationY: Math.sin(p * PI * n) * 24,
+          rotationY: Math.sin(p * PI * n) * 12,
           rotation: (p - 0.5) * -14,
-          y: Math.sin(p * PI * n * 2) * 14,
-          scale: 0.92 + Math.sin(p * PI) * 0.12,
+          y: Math.sin(p * PI * n * 2) * 8,
+          scale: 0.92 + Math.sin(p * PI) * 0.08,
         });
-        gsap.set(bg, { scale: 0.6 + p * 0.9, xPercent: 0, x: `${-p * 10}vw` });
+        gsap.set(bg, { scale: 0.75 + p * 0.35, rotation: p * 20, xPercent: 0, x: `${-p * 6}vw` });
+        gsap.set(journeyFill, { height: `${clamp(p) * 100}%` });
       };
       apply(0);
       ScrollTrigger.create({ trigger: el, start: "top top", end: "bottom bottom", onUpdate: (s) => apply(s.progress), onRefresh: (s) => apply(s.progress) });
@@ -88,7 +91,7 @@ export default function Story() {
 
   const bigNum = { fontSize: "clamp(60px,min(22vw,26dvh),340px)", lineHeight: 0.8 };
   return (
-    <section ref={root} className="bg-accent-2-100 relative" style={{ height: "700vh" }}>
+    <section ref={root} className="bg-accent-2-100 relative" style={{ height: "840vh" }}>
       <SceneAnchor id="how" at={0.1} />
       <div className="px-page sticky top-0 grid h-dvh pt-[72px] grid-cols-1 grid-rows-[auto_auto] content-center items-center gap-4 overflow-hidden md:grid-cols-2 md:grid-rows-1 md:gap-6">
           <div data-spin className="border-accent-2-200 absolute rounded-full" style={{ left: "-14vw", top: "-14vw", width: "46vw", height: "46vw", borderWidth: "3vw", borderStyle: "solid" }} />
@@ -104,7 +107,7 @@ export default function Story() {
           ))}
         </div>
 
-        <div className="relative flex justify-center" style={{ perspective: 1400 }}>
+        <div className="relative flex justify-center" style={{ perspective: 2400 }}>
           <div data-phone-box className="relative" style={{ width: "calc(320px * var(--s, 1))", height: "calc(650px * var(--s, 1))" }}>
             <div className="absolute top-0 left-0 origin-top-left" style={{ width: 320, height: 650, transform: "scale(var(--s, 1))" }}>
               <div data-phone className="h-full w-full p-2.5 shadow-lg will-change-transform" style={{ borderRadius: 48, background: "#201e1d" }}>
@@ -114,8 +117,13 @@ export default function Story() {
               </div>
             </div>
           </div>
-          <div className="absolute top-1/2 flex -translate-y-1/2 flex-col gap-3" style={{ right: -6 }} aria-hidden>
-            {STEPS.map((s) => <span key={s.n} data-dot className="bg-accent h-3 w-3 rounded-full" />)}
+          {/* The journey line: a dashed path behind the step dots, with a solid fill that travels
+             down it as you scroll through the steps, so the dots read as one continuous path
+             rather than isolated markers. */}
+          <div className="absolute top-1/2 flex -translate-y-1/2 flex-col items-center gap-3" style={{ right: -6 }} aria-hidden>
+            <div className="border-accent-2-300 pointer-events-none absolute inset-y-0 w-0 border-l-2 border-dashed opacity-70" />
+            <div data-journey-fill className="bg-accent pointer-events-none absolute top-0 w-[2px] origin-top" style={{ height: 0 }} />
+            {STEPS.map((s) => <span key={s.n} data-dot className="bg-accent relative h-3 w-3 rounded-full" />)}
           </div>
         </div>
       </div>

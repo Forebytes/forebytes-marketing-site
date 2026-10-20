@@ -13,6 +13,7 @@ code with the app's colours, fonts and layouts, and filled with real data picked
 | Story 03 | Dish detail | The featured dish (an AR dish when one exists) |
 | Story 04 | Rate this dish | The app's rating card, filled in as a sample |
 | Story 05 | Feed | Sample friends rating the featured dish |
+| Story 06 | Lists | Saved for Later, Want to Try (the featured restaurant), Places Visited |
 
 The "4.8" sticker in the hero is now the featured restaurant's real average rating, or absent when it has none.
 

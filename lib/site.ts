@@ -4,7 +4,7 @@ export const SITE = {
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://forebytes.com").replace(/\/$/, ""),
   tagline: "See it before you bite it.",
   description:
-    "Forebytes is a restaurant discovery app for Dublin. Find restaurants nearby, browse menus with prices and nutrition, and see dishes in AR on your own table before you order.",
+    "Forebytes is a restaurant and dish discovery app for Dublin: a live map, menus with prices and nutrition, ratings for individual dishes (not just restaurants), and AR models built from real food scans you can place on your own table before you order.",
   locale: "en_IE",
   emails: { support: "support@forebytes.com" },
 } as const;

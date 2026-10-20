@@ -1,7 +1,7 @@
 import {
-  IoBookmarkOutline, IoChevronBack, IoChevronDown, IoChevronForward, IoCube, IoCubeOutline, IoFunnelOutline, IoHeartOutline,
-  IoLeafOutline, IoLocate, IoLocationOutline, IoPeopleOutline, IoPersonAddOutline, IoRestaurantOutline, IoSearch, IoShareOutline,
-  IoStar, IoStarOutline, IoStorefrontOutline,
+  IoAddCircleOutline, IoBookmarkOutline, IoChevronBack, IoChevronDown, IoChevronForward, IoCube, IoCubeOutline, IoFlagOutline,
+  IoFunnelOutline, IoHeartOutline, IoLeafOutline, IoLocate, IoLocationOutline, IoPeopleOutline, IoPersonAddOutline,
+  IoRestaurantOutline, IoSearch, IoShareOutline, IoStar, IoStarOutline, IoStorefrontOutline,
 } from "react-icons/io5";
 import type { RawDish, RawRestaurant, Showcase } from "@/lib/showcase";
 import MapArt from "./MapArt";
@@ -379,6 +379,42 @@ export function FeedScreen({ s }: Props) {
         {posts.map((p, i) => <FeedCard key={p.name} {...p} dish={i === 0 ? d.name : (others[0]?.name ?? d.name)} restaurant={i === 0 ? r.name : s.featured.name} />)}
       </div>
       <TabBar active="Feed" />
+      <HomeIndicator />
+    </>
+  );
+}
+
+/* ───────────────────────── Lists ───────────────────────── */
+
+export function ListsScreen({ s }: Props) {
+  const featured = s.featured;
+  const LISTS = [
+    { name: "Saved for Later", Icon: IoBookmarkOutline, preview: null as string | null },
+    { name: "Want to Try", Icon: IoHeartOutline, preview: featured.name },
+    { name: "Places Visited", Icon: IoFlagOutline, preview: null as string | null },
+  ];
+  return (
+    <>
+      <StatusBar />
+      <NavBar title="Lists" />
+      <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+        {LISTS.map((l) => (
+          <div key={l.name} style={{ display: "flex", alignItems: "center", gap: 12, padding: 14, borderRadius: radius.lg, border: hair, background: c.surfaceRaised }}>
+            <div style={{ width: 44, height: 44, borderRadius: radius.md, background: c.surface, display: "grid", placeItems: "center" }}>
+              <l.Icon size={20} color={c.textMuted} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ ...t.dishName, color: c.text }}>{l.name}</div>
+              {l.preview && <div style={{ ...t.caption, ...muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}><Txt>{l.preview}</Txt></div>}
+            </div>
+            <IoChevronForward size={16} color={c.textMuted} />
+          </div>
+        ))}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 2px", color: c.primary }}>
+          <IoAddCircleOutline size={20} />
+          <span style={{ ...t.subheading }}>New list</span>
+        </div>
+      </div>
       <HomeIndicator />
     </>
   );
