@@ -173,8 +173,11 @@ Open items, none of which will look broken:
 7. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
    Add `APPLE_TEAM_ID` for universal links, and set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com` in
    the app (see "Domains and universal links").
-8. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
-9. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
+8. **Run `supabase/share-preview.sql`** in the shared Supabase project. Until then, shared dish,
+   restaurant, and profile links show the original generic landing page instead of the real name
+   and photo, nothing breaks, it just isn't rich yet. See `docs/universal-links.md`.
+9. **After launch:** add the site to Google Search Console and submit `/sitemap.xml`.
+10. The `anthropics/claude-code-action` workflows used in `forebytes-app` (`claude.yml`,
    `claude-code-review.yml`) are not set up here yet; they need the `CLAUDE_CODE_OAUTH_TOKEN` secret.
 
 <!-- BEGIN:nextjs-agent-rules -->
