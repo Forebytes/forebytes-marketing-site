@@ -61,7 +61,6 @@ export function FooterFull() {
           <div className={col}>
             <b className="text-bg">Product</b>
             <a href="#how" className="foot-link">How it works</a>
-            <a href="#ar" className="foot-link">AR</a>
             <Link href="/features" className="foot-link">Features</Link>
             <a href="#join" className="foot-link">Waitlist</a>
           </div>

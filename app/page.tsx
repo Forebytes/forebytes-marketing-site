@@ -7,7 +7,6 @@ import Hero from "@/components/home/Hero";
 import Marquee from "@/components/home/Marquee";
 import Manifesto from "@/components/home/Manifesto";
 import Story from "@/components/home/Story";
-import ArReveal from "@/components/home/ArReveal";
 import Dublin from "@/components/home/Dublin";
 import Cta from "@/components/home/Cta";
 
@@ -41,7 +40,6 @@ export default function Home() {
         </div>
         <Manifesto />
         <Story />
-        <ArReveal />
         <Dublin />
         <Cta />
       </main>
