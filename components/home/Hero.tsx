@@ -2,9 +2,21 @@
 
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
+import AppScreen from "@/components/app-ui/AppScreen";
+import { useScreenData } from "@/components/app-ui/ShowcaseProvider";
+import { DishScreen } from "@/components/app-ui/screens";
 import { registerGsap, prefersReducedMotion } from "@/lib/gsap";
 
 const FLIP_WORDS = ["bite", "buy", "try", "rate", "byte", "share", "write"];
+
+function HeroScreen() {
+  const { s, skeleton } = useScreenData();
+  return (
+    <AppScreen skeleton={skeleton}>
+      <DishScreen s={s} />
+    </AppScreen>
+  );
+}
 
 function Word({ children, delay }: { children: React.ReactNode; delay: number }) {
   return (
@@ -16,6 +28,9 @@ function Word({ children, delay }: { children: React.ReactNode; delay: number })
 
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
+  const { s, live } = useScreenData();
+  // The sticker shows the featured restaurant's real average rating, or nothing when it has none.
+  const rating = live && s.featured.ratingCount > 0 && s.featured.ratingAvg !== null ? s.featured.ratingAvg.toFixed(1) : null;
 
   useGSAP(
     () => {
@@ -108,19 +123,18 @@ export default function Hero() {
               style={{ aspectRatio: "300/610", borderRadius: 46, background: "#201e1d", boxShadow: "var(--shadow-lg), 0 60px 80px -30px color-mix(in srgb, var(--color-accent) 55%, transparent)" }}
             >
               <div className="bg-accent-2-300 relative h-full w-full overflow-hidden" style={{ borderRadius: 36 }}>
-                <div className="bg-bg absolute rounded-full shadow-lg" style={{ left: "50%", top: "44%", width: "74%", aspectRatio: "1", transform: "translate(-50%,-50%)" }} />
-                <div className="bg-accent-300 text-accent-900 absolute grid place-items-center rounded-full text-center text-[11px] font-bold tracking-[.08em]" style={{ left: "50%", top: "44%", width: "46%", aspectRatio: "1", transform: "translate(-50%,-50%)" }}>
-                  YOUR<br />DISH
-                </div>
-                <div className="border-accent-2-700 anim-spin absolute rounded-full border-[3px] border-dashed" style={{ left: "50%", top: "44%", width: "74%", aspectRatio: "1", transform: "translate(-50%,-50%)" }} />
-                <div className="absolute inset-x-0 bottom-[26px] flex justify-center"><span className="btn btn-primary text-sm">Placed on table</span></div>
+                <HeroScreen />
               </div>
             </div>
           </div>
-          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md lg:grid" style={{ left: -64, top: "14%" }}>
+          <div data-spin="0.25" className="bg-accent text-bg font-heading absolute hidden h-[110px] w-[110px] place-items-center rounded-full text-center text-[22px] leading-none shadow-md lg:grid" style={{ left: -100, top: "14%" }}>
             AR<br />ready
           </div>
-          <div data-px="-0.3" className="bg-accent-2 font-heading absolute hidden h-20 w-20 place-items-center rounded-full text-[28px] text-white shadow-md lg:grid" style={{ right: -44, bottom: "14%" }}>4.8</div>
+          {rating !== null && (
+            <div data-px="-0.3" className="bg-accent-2 font-heading absolute hidden h-20 w-20 place-items-center rounded-full text-[28px] text-white shadow-md lg:grid" style={{ right: -44, bottom: "14%" }}>
+              {rating}
+            </div>
+          )}
         </div>
       </div>
     </section>

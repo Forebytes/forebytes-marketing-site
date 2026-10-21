@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
-import { registerGsap, clamp } from "@/lib/gsap";
+import { registerGsap } from "@/lib/gsap";
 
 const LETTERS = ["F", "o", "r", "e", "b", "y", "t", "e", "s", "."];
 
@@ -16,6 +16,7 @@ export function FooterCompact() {
         Forebytes
       </Link>
       <div className="flex flex-wrap gap-7 text-[15px]">
+        <Link href="/features" className="foot-link">Features</Link>
         <Link href="/about" className="foot-link">About</Link>
         <Link href="/faq" className="foot-link">FAQs</Link>
         <Link href="/community-guidelines" className="foot-link">Community guidelines</Link>
@@ -35,21 +36,15 @@ export function FooterFull() {
       const { gsap, ScrollTrigger } = registerGsap();
       const el = root.current!;
       const letters = gsap.utils.toArray<HTMLElement>("[data-wl] > span", el);
-      const apply = (fp: number) =>
-        letters.forEach((l, i) => {
-          const k = clamp(fp * (letters.length + 3) - i - 1.5);
-          const e = 1 - Math.pow(1 - k, 3);
-          gsap.set(l, { yPercent: (1 - e) * 115, rotation: (1 - e) * (i % 2 ? 14 : -14) });
-        });
-      apply(0);
-      ScrollTrigger.create({
-        trigger: el,
-        start: "top bottom",
-        end: () => `top+=${el.offsetHeight * 0.9} bottom`,
-        invalidateOnRefresh: true,
-        onUpdate: (s) => apply(s.progress),
-        onRefresh: (s) => apply(s.progress),
+      // One-shot, not scroll-scrubbed: the footer is the last thing on the page, so there's no
+      // scroll room left to scrub through once you reach it. A fast swipe to the bottom would
+      // otherwise compress the whole reveal into a handful of pixels and it'd read as "stuck".
+      gsap.set(letters, { yPercent: 115, rotation: (i) => (i % 2 ? 14 : -14) });
+      const tl = gsap.timeline({ paused: true });
+      letters.forEach((l, i) => {
+        tl.to(l, { yPercent: 0, rotation: 0, duration: 0.7, ease: "back.out(1.6)" }, i * 0.045);
       });
+      ScrollTrigger.create({ trigger: el, start: "top 85%", once: true, onEnter: () => tl.play() });
     },
     { scope: root },
   );
@@ -66,7 +61,7 @@ export function FooterFull() {
           <div className={col}>
             <b className="text-bg">Product</b>
             <a href="#how" className="foot-link">How it works</a>
-            <a href="#ar" className="foot-link">AR</a>
+            <Link href="/features" className="foot-link">Features</Link>
             <a href="#join" className="foot-link">Waitlist</a>
           </div>
           <div className={col}>

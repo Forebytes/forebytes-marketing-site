@@ -25,10 +25,7 @@ export default function Nav() {
           <span className="max-[379px]:sr-only">Forebytes</span>
         </Link>
         {home && (
-          <>
-            <a href="#how" className={`${pill} hidden md:inline-flex`}>How it works</a>
-            <a href="#ar" className={`${pill} hidden md:inline-flex`}>AR</a>
-          </>
+          <a href="#how" className={`${pill} hidden md:inline-flex`}>How it works</a>
         )}
         <Link href="/about" className={`${pill} hidden sm:inline-flex`} aria-current={path === "/about" ? "page" : undefined}>
           About

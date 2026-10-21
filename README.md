@@ -68,7 +68,7 @@ components/home/        scroll-driven home sections (Hero, Marquee, Manifesto, S
 components/             Nav, Footer, Reveal, LegalPage, WaitlistForm, SmoothScroll, JsonLd
 lib/                    site config, SEO helper, waitlist validation, GSAP helpers (+ __tests__)
 scripts/                check-secrets, check-audit
-docs/                   deployment, universal links and domains
+docs/                   deployment, universal links and domains, live phones
 ```
 
 ### Design system
