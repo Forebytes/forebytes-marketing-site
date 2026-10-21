@@ -32,10 +32,10 @@ function PhoneScreens() {
   );
 }
 
-/** The original pinned, 3D-tilting phone treatment — kept for lg+ screens (see StoryMobile for
- * the full-bleed version below that breakpoint, and Story.tsx for the split). The pin only
- * activates at lg+ via ScrollTrigger.matchMedia, so it costs nothing and reserves no scroll
- * height below that breakpoint, where this component isn't even rendered. */
+/** The original pinned, 3D-tilting phone treatment — kept for md+ (tablets and up; see
+ * StoryMobile for the full-bleed version below that breakpoint, and Story.tsx for the split).
+ * The pin only activates at md+ via ScrollTrigger.matchMedia, so it costs nothing and reserves
+ * no scroll height below that breakpoint, where this component isn't even rendered. */
 export default function StoryDesktop() {
   const root = useRef<HTMLElement>(null);
 
@@ -45,7 +45,7 @@ export default function StoryDesktop() {
       const el = root.current!;
 
       ScrollTrigger.matchMedia({
-        "(min-width: 1024px)": () => {
+        "(min-width: 768px)": () => {
           const steps = gsap.utils.toArray<HTMLElement>("[data-step]", el);
           const screens = gsap.utils.toArray<HTMLElement>("[data-screen]", el);
           const dots = gsap.utils.toArray<HTMLElement>("[data-dot]", el);
