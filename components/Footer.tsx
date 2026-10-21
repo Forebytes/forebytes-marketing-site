@@ -88,7 +88,7 @@ export function FooterFull() {
         aria-label="Forebytes"
         role="img"
         className="font-heading text-accent mt-[clamp(40px,8vh,90px)] flex justify-center whitespace-nowrap select-none"
-        style={{ fontSize: "21.5vw", lineHeight: 0.95, letterSpacing: "-.04em" }}
+        style={{ fontSize: "calc((100vw - 2 * var(--gutter)) * 0.2389)", lineHeight: 0.95, letterSpacing: "-.04em" }}
       >
         {LETTERS.map((c, i) => (
           <span key={i} data-wl aria-hidden className="inline-block overflow-hidden" style={{ padding: ".05em .02em .3em", margin: "-.05em 0 -.3em" }}>

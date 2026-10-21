@@ -32,11 +32,11 @@ export default function Manifesto() {
 
   return (
     <section ref={root} className="relative" style={{ height: "260vh" }}>
-      <div className="px-page sticky top-0 flex h-dvh items-center">
+      <div className="px-page sticky top-0 flex h-dvh items-center pt-16">
         <div>
           <p
             className="font-heading max-w-[15em]"
-            style={{ fontSize: "clamp(34px,6.2vw,104px)", lineHeight: 1.04, letterSpacing: "-.02em" }}
+            style={{ fontSize: "clamp(28px,min(6.2vw,9.5dvh),104px)", lineHeight: 1.04, letterSpacing: "-.02em" }}
           >
             {words.map((w, i) => (
               <span key={i} data-w className="inline-block whitespace-pre" style={{ opacity: 0.14 }}>

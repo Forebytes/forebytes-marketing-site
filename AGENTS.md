@@ -81,6 +81,26 @@ body, loaded with `next/font` (variables `--f-caprasimo`, `--f-figtree`).
   decorative circles, stickers, marquee and the tilting motion. Do not "clean it up".
 - Use `h-dvh` / `min-h-dvh`, not `h-screen`, for full-height sections (mobile Safari).
 
+### Responsive rules (checked at 320px to 2560px, portrait and landscape)
+
+- **Size pinned scenes by viewport height as well as width**: `clamp(min, min(Nvw, Mdvh), max)`.
+  A landscape phone is 390px tall, so a heading sized only in `vw` hides under the nav.
+- **Keep sticky scenes clear of the fixed nav** (`pt-[72px]`) and use `h-dvh`, not `h-screen`.
+- **Content is bounded to a ~1680px column.** `--gutter` grows on wide screens, so use `.px-page` or
+  `var(--gutter)` for side padding rather than a fixed clamp, or content sprawls left on a 2560px display.
+- **The Story phone is a fixed 320x650 device scaled with `--s`** (computed in `Story.tsx`), so its screens
+  always look like the app. Size it by changing the fit maths, never by resizing the device.
+- **Do not tilt tall blocks.** A 1.5deg rotation on a 1500px-tall legal section swings its edges off screen.
+  Use `Reveal variant="fade"` for anything taller than a paragraph.
+- **Never put a display utility on a link that is also `hidden`** (`inline-flex` overrides `hidden`). Use
+  `hidden md:inline-flex`.
+- **Clip full-bleed rotated bands** (the marquee) in an `overflow-x-clip` wrapper so phones cannot pan sideways.
+- Tap targets are at least 32px tall; check with a real device or the responsive audit before shipping.
+- **Links into the pinned scenes jump, they do not scroll.** Lenis runs with `anchors: { immediate: true }`,
+  and `#how`, `#ar` and `#join` are `SceneAnchor` markers inside their scenes, placed where the scene's content
+  is visible. A link to a scene's own top would land on a blank first frame. Add the same marker to any new
+  pinned scene that gets a nav link.
+
 ### Motion
 
 - Scroll scenes are client components using GSAP `ScrollTrigger` through `useGSAP`; Lenis drives

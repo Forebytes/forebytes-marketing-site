@@ -38,11 +38,11 @@ export default function LegalPage({
             {sections.map((s) => <a key={s.id} href={`#${s.id}`} className="pill-link">{s.title}</a>)}
           </nav>
           <article className="max-w-[46em] text-lg leading-[1.65]">
-            {preamble && <Reveal variant="soft" className="legal-prose mb-14">{preamble}</Reveal>}
+            {preamble && <Reveal variant="fade" className="legal-prose mb-14">{preamble}</Reveal>}
             {sections.map((s, i) => (
               <div key={s.id}>
                 <Reveal as="h2" variant="soft" id={s.id} className={`font-heading mb-4 scroll-mt-[100px] ${i ? "mt-16" : "mt-0"}`} style={{ fontSize: "clamp(32px,4vw,52px)", lineHeight: 1 }}>{s.title}</Reveal>
-                <Reveal as="div" variant="soft" className="legal-prose">{s.body}</Reveal>
+                <Reveal as="div" variant="fade" className="legal-prose">{s.body}</Reveal>
               </div>
             ))}
           </article>

@@ -38,13 +38,13 @@ export default function Features() {
 
   return (
     <section ref={root} className="bg-accent-100 relative" style={{ height: "520vh" }}>
-      <div className="sticky top-0 flex h-dvh flex-col justify-center gap-10 overflow-hidden">
-        <h2 className="font-heading px-page m-0" style={{ fontSize: "clamp(40px,6vw,96px)", lineHeight: 1 }}>
+      <div className="sticky top-0 flex h-dvh flex-col justify-center pt-[72px] gap-[clamp(14px,4dvh,40px)] overflow-hidden">
+        <h2 className="font-heading px-page m-0" style={{ fontSize: "clamp(30px,min(6vw,9dvh),96px)", lineHeight: 1 }}>
           Everything between<br />hungry and happy.
         </h2>
         <div data-track className="px-page flex w-max gap-7 will-change-transform">
           {CARDS.map((c) => (
-            <div key={c.t} data-card className={`${c.bg} ${c.fg} flex flex-col justify-between p-8`} style={{ width: "min(420px,78vw)", height: "min(400px,44vh)", borderRadius: 44 }}>
+            <div key={c.t} data-card className={`${c.bg} ${c.fg} flex flex-col justify-between p-8`} style={{ width: "min(420px,78vw)", height: "clamp(210px,44dvh,400px)", borderRadius: 44 }}>
               <div className={`${c.dot} h-[72px] w-[72px] rounded-full`} />
               <div>
                 <h3 className="font-heading m-0 text-4xl leading-none">{c.t}</h3>

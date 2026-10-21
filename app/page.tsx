@@ -18,7 +18,9 @@ export default function Home() {
       <Nav />
       <main id="main">
         <Hero />
-        <Marquee />
+        <div className="overflow-x-clip">
+          <Marquee />
+        </div>
         <Manifesto />
         <Story />
         <ArReveal />
