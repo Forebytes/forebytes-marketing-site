@@ -1,6 +1,15 @@
-import type { CSSProperties, ReactNode } from "react";
+"use client";
+
+import { createContext, useContext, type CSSProperties, type ReactNode } from "react";
 import { IoBatteryFull, IoCellular, IoCompassOutline, IoGridOutline, IoPersonOutline, IoStar, IoWifi } from "react-icons/io5";
 import { SANS, c, radius, t } from "./theme";
+
+/** True (the default) draws a fake status bar/home indicator, right for a screen sitting inside a
+ * drawn phone bezel. A screen filling a real device's own full viewport doesn't need one — its
+ * real status bar is already there, and drawing a second, fake one next to it reads as exactly
+ * that: fake. StoryMobile sets this to false. */
+const ChromeContext = createContext(true);
+export const ChromeProvider = ChromeContext.Provider;
 
 /** Dynamic text. While data loads it renders as a quiet block (see `[data-skeleton]` in globals.css). */
 export function Txt({ children, style }: { children: ReactNode; style?: CSSProperties }) {
@@ -54,8 +63,10 @@ export function SectionTitle({ children }: { children: ReactNode }) {
   );
 }
 
-/** The iPhone status bar and Dynamic Island. `dark` text on light screens. */
+/** The iPhone status bar and Dynamic Island. `dark` text on light screens. Renders nothing when
+ * inside a ChromeProvider set to false — see the note on ChromeContext above. */
 export function StatusBar({ color = c.text }: { color?: string }) {
+  if (!useContext(ChromeContext)) return null;
   return (
     <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 54, zIndex: 5, color, fontFamily: SANS }}>
       <div style={{ position: "absolute", top: 11, left: "50%", marginLeft: -60, width: 120, height: 34, borderRadius: 20, background: "#000" }} />
@@ -70,6 +81,7 @@ export function StatusBar({ color = c.text }: { color?: string }) {
 }
 
 export function HomeIndicator({ color = c.text }: { color?: string }) {
+  if (!useContext(ChromeContext)) return null;
   return <div style={{ position: "absolute", bottom: 8, left: "50%", marginLeft: -67, width: 134, height: 5, borderRadius: 3, background: color, opacity: 0.9, zIndex: 5 }} />;
 }
 
