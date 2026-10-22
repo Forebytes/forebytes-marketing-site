@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import {
   IoAddCircleOutline, IoBookmarkOutline, IoChevronBack, IoChevronDown, IoChevronForward, IoCube, IoCubeOutline, IoFlagOutline,
   IoFunnelOutline, IoHeartOutline, IoLeafOutline, IoLocate, IoLocationOutline, IoPeopleOutline, IoPersonAddOutline,
@@ -276,10 +273,7 @@ const VERDICTS = ["", "Not for me", "It was fine", "Good", "Really good", "Excep
 export function RateScreen({ s }: Props) {
   const { dish: d } = s.dish;
   const comment = "Properly good. Would order again.";
-  // A real tap target, not just decoration — the one piece of the phone mockup that's genuinely
-  // interactive, since letting a visitor rate a sample dish is a harmless, fun way to show the
-  // gesture without it being (or claiming to be) a real submission.
-  const [rating, setRating] = useState(4);
+  const rating = 4;
   return (
     <>
       <StatusBar />
@@ -293,15 +287,9 @@ export function RateScreen({ s }: Props) {
               {[1, 2, 3, 4, 5].map((star) => {
                 const filled = star <= rating;
                 return (
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() => setRating(star)}
-                    aria-label={`Rate ${star} star${star === 1 ? "" : "s"}`}
-                    style={{ width: 48, height: 48, borderRadius: radius.pill, border: `1px solid ${filled ? c.star : c.border}`, background: filled ? c.primarySoft : "transparent", display: "grid", placeItems: "center", padding: 0, cursor: "pointer" }}
-                  >
+                  <div key={star} style={{ width: 48, height: 48, borderRadius: radius.pill, border: `1px solid ${filled ? c.star : c.border}`, background: filled ? c.primarySoft : "transparent", display: "grid", placeItems: "center" }}>
                     {filled ? <IoStar size={22} color={c.star} /> : <IoStarOutline size={22} color={c.border} />}
-                  </button>
+                  </div>
                 );
               })}
             </div>
