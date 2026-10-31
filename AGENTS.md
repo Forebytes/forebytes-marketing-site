@@ -187,8 +187,10 @@ Open items, none of which will look broken:
 
 1. **Waitlist.** Live and working on Supabase. Optional: add `BREVO_API_KEY` in Vercel to get an email
    to support@forebytes.com for each new signup. Delete any test rows from the `waitlist` table.
-2. **Privacy Policy entity.** `[FOREBYTES ENTITY NAME]` and `[REGISTERED ADDRESS]` are still
-   placeholders in `app/privacy/page.tsx`. Forebytes is not incorporated yet.
+2. **Privacy Policy entity.** Forebytes Limited incorporated in Ireland on 28 October 2026 (CRO
+   register number 829261). The entity name in `app/privacy/page.tsx` is filled in; `[REGISTERED
+   ADDRESS]` is still a placeholder — the Certificate of Incorporation doesn't carry the
+   registered address (that's on the Constitution/Form A1).
 3. **Solicitor review** of Privacy and Terms.
 4. **"Launched" vs "launching" in Dublin.** The founders' copy says launched; the home page, footer
    and metadata still say launching. Ask which is true.
