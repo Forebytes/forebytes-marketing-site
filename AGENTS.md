@@ -187,28 +187,24 @@ Open items, none of which will look broken:
 
 1. **Waitlist.** Live and working on Supabase. Optional: add `BREVO_API_KEY` in Vercel to get an email
    to support@forebytes.com for each new signup. Delete any test rows from the `waitlist` table.
-2. **Privacy Policy entity.** Forebytes Limited incorporated in Ireland on 28 October 2026 (CRO
-   register number 829261). The entity name in `app/privacy/page.tsx` is filled in; `[REGISTERED
-   ADDRESS]` is still a placeholder — the Certificate of Incorporation doesn't carry the
-   registered address (that's on the Constitution/Form A1).
-3. **Solicitor review** of Privacy and Terms.
-4. **"Launched" vs "launching" in Dublin.** The founders' copy says launched; the home page, footer
+2. **Solicitor review** of Privacy and Terms.
+3. **"Launched" vs "launching" in Dublin.** The founders' copy says launched; the home page, footer
    and metadata still say launching. Ask which is true.
-5. **Design placeholders still visible:** "YOUR DISH", "Dish name / Nutrition / € —" menu rows, and
+4. **Design placeholders still visible:** "YOUR DISH", "Dish name / Nutrition / € —" menu rows, and
    the "4.8" and "AR ready" stickers (the 4.8 is not a real rating).
-6. **BLOCKED on an Apple Developer account.** There is no Apple Team ID yet, so
+5. **BLOCKED on an Apple Developer account.** There is no Apple Team ID yet, so
    `/.well-known/apple-app-site-association` returns 404 and shared links open the website, not the
    app. Nothing on the site is broken by this. When the team exists: set `APPLE_TEAM_ID` in Vercel,
    redeploy, check the file returns 200 JSON on `www.forebytes.com`, then do the app-side steps in
    `docs/universal-links.md`. Tracked in the repo's issues.
-7. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
+6. **Domain.** `forebytes.com` is live. Set `NEXT_PUBLIC_SITE_URL=https://forebytes.com` in Vercel.
    Add `APPLE_TEAM_ID` for universal links, and set `EXPO_PUBLIC_WEB_URL=https://www.forebytes.com` in
    the app (see "Domains and universal links").
-8. **Run `supabase/showcase.sql`** in the shared Supabase project (after Ayomide has seen the exposure note in
+7. **Run `supabase/showcase.sql`** in the shared Supabase project (after Ayomide has seen the exposure note in
    `forebytes-app`'s `docs/security.md`). Until then the phones show placeholder labels instead of real data.
-9. **Privacy Policy:** the site now uses a visitor's approximate location (city, from their IP address, not stored)
+8. **Privacy Policy:** the site now uses a visitor's approximate location (city, from their IP address, not stored)
    to pick what the phones show. The founders' policy does not mention it yet; see the repo's issues.
-10. **Run `supabase/share-preview.sql`** in the shared Supabase project (re-run it if you already
+9. **Run `supabase/share-preview.sql`** in the shared Supabase project (re-run it if you already
     did before `public_profile_card()` was added). Until then, shared dish, restaurant, and profile
     links show the original generic landing page instead of the real name and photo, nothing
     breaks, it just isn't rich yet. See `docs/universal-links.md`.
