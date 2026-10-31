@@ -27,7 +27,7 @@ export default function Privacy() {
           title: "Who is responsible for your data",
           body: (
             <>
-              <p>Forebytes Limited, [REGISTERED ADDRESS] (&quot;Forebytes&quot;, &quot;we&quot;, &quot;us&quot;) is the data controller for the personal data described in this policy.</p>
+              <p>Forebytes Limited (&quot;Forebytes&quot;, &quot;we&quot;, &quot;us&quot;), registered in Ireland, is the data controller for the personal data described in this policy.</p>
               <p>Questions about your data, or this policy: {mail}</p>
             </>
           ),
