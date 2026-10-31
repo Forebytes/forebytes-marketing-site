@@ -14,17 +14,7 @@
  */
 import { execSync } from "node:child_process";
 
-const ACCEPTED = {
-  "GHSA-vfj7-8cjw-p6xm": {
-    package: "braces",
-    reason:
-      "Denial of service on deeply nested glob patterns (braces <= 3.0.3, no patched 3.x release). " +
-      "Reached only through eslint-config-next -> fast-glob -> micromatch, which is lint tooling: " +
-      "it never ships to visitors, and the only globs it expands are this repository's own. The one " +
-      "'fix' npm offers is downgrading eslint-config-next to v14, which is not a fix.",
-    reviewBy: "2026-12-01",
-  },
-};
+const ACCEPTED = {};
 
 let raw;
 try {
